@@ -1,21 +1,31 @@
 class BingoBoard
   attr_reader :numbers
-  attr_accessor :selected_numbers
 
   def initialize
     @numbers = [[], [], []]
-    @selected_numbers = []
     pick_numbers
-    display_board
   end
 
-  def display_board
+  def display
     puts 'Your bingo card...'
     @numbers.each do |row_nums|
       row
       num_row(row_nums)
     end
     row
+    puts ''
+  end
+
+  def bingo?
+    # Return false if one of the elements is not "XX"
+    @numbers.flatten.each { |num| return false if num != 'XX' }
+    true
+  end
+
+  def cross_number(selected_num)
+    @numbers.each do |row_nums|
+      row_nums.map! { |num| num == selected_num ? 'XX' : num }
+    end
   end
 
   private
@@ -25,8 +35,7 @@ class BingoBoard
   end
 
   def num_row(nums)
-    nums.map! { |num| num.to_s.split('').count == 1 ? "0#{num}" : num.to_s }
-    puts "| #{nums[0]} | #{nums[1]} | #{nums[2]} | #{nums[3]} | #{nums[4]} |"
+    puts "|  #{nums[0]} | #{nums[1]} | #{nums[2]} | #{nums[3]} | #{nums[4]} |"
   end
 
   def pick_numbers
