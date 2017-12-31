@@ -1,13 +1,14 @@
 class BingoBoard
   attr_reader :numbers
 
-  def initialize
+  def initialize(player_number)
     @numbers = [[], [], []]
+    @player_number = player_number
     pick_numbers
   end
 
   def display
-    puts 'Your bingo card...'
+    puts "Player #{@player_number}'s bingo card..."
     @numbers.each do |row_nums|
       row
       num_row(row_nums)
