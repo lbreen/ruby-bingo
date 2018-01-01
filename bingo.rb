@@ -4,58 +4,61 @@ require_relative 'player'
 class Bingo
   def initialize
     @players = []
-    select_players
     @remaining_numbers = (1..49).to_a
     @selected_numbers = []
     @bingo = false
+    @line = false
   end
 
   def play
+    build_players
+
     @players.each { |player| player.board.display }
-    puts 'Would you like to start? (y/n)'
-    print '> '
-    response = gets.chomp
-    puts ''
-    if response.downcase == 'y'
-      until @bingo == true
-        puts "Previous numbers: #{@selected_numbers}"
-        number = select_number
-        puts "Current number: #{number}"
 
-        update_player_boards(number)
+    until @bingo == true
+      puts 'Press ENTER to continue.'
+      gets.chomp
 
-        bingo?
+      puts "Previous numbers: #{@selected_numbers}"
+      number = select_number
+      puts "Current number: #{number}"
 
-        puts 'Press ENTER to continue.'
-        gets.chomp
-      end
-    else
-      puts 'Goodbye!'
+      update_player_boards(number)
+
+      # Only want to be called until the first line is completed
+      player_has_line unless @line
+      player_has_bingo
     end
   end
 
   private
+
+  def build_players
+    number_of_players = select_players
+    x = 1
+    number_of_players.times do
+      @players << Player.new(x)
+      x += 1
+    end
+  end
 
   def select_players
     continue = false
     until continue == true
       puts 'How many players are there? (0-4)'
       print '> '
-      response = gets.chomp.to_i
-      if response == 0
+      num_of_players = gets.chomp.to_i
+      if num_of_players.zero?
         puts 'That is an invalid choice'
-      elsif response > 4
+      elsif num_of_players > 4
         puts 'Please choose 4 or less players'
       else
-        puts "#{response} players selected"
+        puts "#{num_of_players} players selected"
         continue = true
       end
     end
-    x = 1
-    response.times do
-      @players << Player.new(x)
-      x += 1
-    end
+
+    num_of_players
   end
 
   def update_player_boards(selected_number)
@@ -73,7 +76,7 @@ class Bingo
     number
   end
 
-  def bingo?
+  def player_has_bingo
     @players.each do |player|
       if player.board.bingo?
         @bingo = true
@@ -82,7 +85,32 @@ class Bingo
       end
     end
   end
+
+  def player_has_line
+    @players.each do |player|
+      if player.board.line?
+        @line = true
+        puts "Player #{player.number} has a line!"
+      end
+    end
+  end
 end
 
 bingo = Bingo.new
-bingo.play
+playing = true
+
+until playing == false
+  puts 'Would you like to play bingo? (y/n)'
+  print '> '
+  response = gets.chomp.downcase
+
+  if response == 'y'
+    bingo.play
+  elsif response == 'n'
+    playing = false
+  else
+    puts 'Please enter y or n'
+  end
+end
+
+
