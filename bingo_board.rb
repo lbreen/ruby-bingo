@@ -32,7 +32,12 @@ class BingoBoard
 
   def cross_number(selected_num)
     @numbers.each do |row_nums|
-      row_nums.map! { |num| num == selected_num ? 'XX' : num }
+      row_nums.each_with_index do |num, index|
+        if num == selected_num
+          row_nums[index] = "XX"
+          puts "Player #{@player_number} has a number!"
+        end
+      end
     end
   end
 

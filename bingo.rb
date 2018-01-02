@@ -15,6 +15,9 @@ class Bingo
 
     @players.each { |player| player.board.display }
 
+    @players.first.board.delete
+
+    @players.first.board.display
     until @bingo == true
       puts 'Press ENTER to continue.'
       gets.chomp
@@ -96,15 +99,16 @@ class Bingo
   end
 end
 
-bingo = Bingo.new
 playing = true
 
+# Router logic
 until playing == false
   puts 'Would you like to play bingo? (y/n)'
   print '> '
   response = gets.chomp.downcase
 
   if response == 'y'
+    bingo = Bingo.new
     bingo.play
   elsif response == 'n'
     playing = false
