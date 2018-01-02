@@ -1,3 +1,6 @@
+# BingoBoard holds data relating to which numbers a player has for that round
+# of bingo. A Player has_many BingoBoards, a BingoBoard belongs_to a Player.
+# A new BingoBoard is created when a new Player instance is created.
 class BingoBoard
   attr_reader :numbers
 
@@ -34,7 +37,7 @@ class BingoBoard
     @numbers.each do |row_nums|
       row_nums.each_with_index do |num, index|
         if num == selected_num
-          row_nums[index] = "XX"
+          row_nums[index] = 'XX'
           puts "Player #{@player_number} has a number!"
         end
       end

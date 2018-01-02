@@ -1,6 +1,9 @@
 require_relative 'bingo_board'
 require_relative 'player'
-
+# The Bingo class is the controller for the Player and BingoBoard models.
+# It controls the progression of the game and the creation of new Player
+# and BingoBoard instances. The primary method of the Bingo class is the
+# 'play' method which dictates the order of play.
 class Bingo
   def initialize
     @players = []
@@ -15,8 +18,6 @@ class Bingo
 
     @players.each { |player| player.board.display }
 
-    @players.first.board.delete
-
     @players.first.board.display
     until @bingo == true
       puts 'Press ENTER to continue.'
@@ -28,8 +29,7 @@ class Bingo
 
       update_player_boards(number)
 
-      # Only want to be called until the first line is completed
-      player_has_line unless @line
+      player_has_line unless @line # Don't call if a player already has a line
       player_has_bingo
     end
   end
@@ -81,20 +81,18 @@ class Bingo
 
   def player_has_bingo
     @players.each do |player|
-      if player.board.bingo?
-        @bingo = true
-        puts '**BINGO!!**'
-        puts "Player #{player.number} has won."
-      end
+      next unless player.board.bingo?
+      @bingo = true
+      puts '**BINGO!!**'
+      puts "Player #{player.player_number} has won."
     end
   end
 
   def player_has_line
     @players.each do |player|
-      if player.board.line?
-        @line = true
-        puts "Player #{player.number} has a line!"
-      end
+      next unless player.board.line?
+      @line = true
+      puts "Player #{player.player_number} has a line!"
     end
   end
 end
@@ -116,5 +114,3 @@ until playing == false
     puts 'Please enter y or n'
   end
 end
-
-
